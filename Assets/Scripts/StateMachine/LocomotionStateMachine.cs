@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+namespace STM
 {
-    // Start is called before the first frame update
-    void Start()
+    public class LocomotionStateMachine : StateMachineBehaviour
     {
-        
-    }
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            STM.CharacterBase stmCharacterController = animator.GetComponent<STM.CharacterBase>();
+            stmCharacterController.IsPossibleMovement = true;
+            stmCharacterController.IsPossibleAttack = true;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            STM.CharacterBase stmCharacterController = animator.GetComponent<STM.CharacterBase>();
+            stmCharacterController.IsPossibleMovement = false;
+            stmCharacterController.IsPossibleAttack = false;
+        }
     }
 }
