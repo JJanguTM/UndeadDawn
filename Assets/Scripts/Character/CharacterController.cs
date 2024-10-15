@@ -7,6 +7,8 @@ namespace STM
 {
     public class CharacterController : MonoBehaviour
     {
+        public static CharacterController Instance;
+
         public Transform cameraPivot;
         public float cameraRotationSpeed = 30f;
 
@@ -17,6 +19,7 @@ namespace STM
 
         private void Awake()
         {
+            Instance = this;
             characterBase = GetComponent<CharacterBase>();
         }
 
@@ -39,14 +42,17 @@ namespace STM
         private void Update()
         {
             Vector2 input = STMInputSystem.Singleton.moveInput;
-            Debug.Log("Move Input: " + input);// - Input System에서 input 값을 가져온다.
+           
             if (characterBase.IsAlive)
             {
                 characterBase.Move(input, Camera.main.transform.rotation.eulerAngles.y);
                 characterBase.Rotate(CameraSystem.Instance.AimingTargetPoint);// - Move() 함수로 input 값과, 현재 Main Camera의
                 characterBase.IsStrafe = STMInputSystem.Singleton.isStrafe;
                 characterBase.IsWalk = STMInputSystem.Singleton.isWalk;
+
+                characterBase.IsAiming = STMInputSystem.Singleton.isAim;
                 CameraSystem.Instance.SetActiveAimingCamera(STMInputSystem.Singleton.isAim);
+
             }
             else
             {

@@ -25,10 +25,10 @@ namespace STM
             Instance = this;
             if (mainCamera == null)
             {
-                mainCamera = Camera.main;  // 'Main Camera' 태그가 붙은 카메라를 자동으로 할당
+                mainCamera = Camera.main;
+
             }
         }
-
         private void OnDestroy()
         {
             Instance = null;
@@ -36,6 +36,11 @@ namespace STM
 
         private void Update()
         {
+            if (mainCamera == null)
+            {
+                Debug.LogError("Main Camera is not assigned.");
+                return;
+            }
             Ray ray = mainCamera.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f, aimingLayers, QueryTriggerInteraction.Ignore))
             {

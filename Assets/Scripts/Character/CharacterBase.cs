@@ -84,10 +84,8 @@ namespace STM
 
         protected virtual void Awake()
         {
-            if (characterStats == null)
-            {
-                characterStats = new CharacterStats();
-            }
+           
+
             characterStats.currentHP = characterStats.maxHP;
 
             characterAnimator = GetComponent<Animator>();
@@ -140,11 +138,25 @@ namespace STM
             characterAnimator.SetTrigger("JumpTrigger");
         }
 
+        public void TakeDamage(float damage)
+        {
+            characterStats.currentHP -= damage;
+
+            OnChangedHP?.Invoke(characterStats.currentHP, characterStats.maxHP);
+
+            if (characterStats.currentHP <= 0)
+            {
+                // 죽는것에 대한 처리
+                // 예) 죽는 모션을 재생한다.
+                characterAnimator.SetTrigger("DeadTrigger");
+                characterAnimator.SetBool("IsDead", true);
+            }
+        }
 
 
         public void Move(Vector2 input, float yAxisAngle)
         {
-            targetSpeed = input.magnitude > 0f ? targetSpeed = speed : 0f;
+            targetSpeed = input.magnitude > 0f ? speed : 0f;
 
             if (IsPossibleMovement == false)
             {
@@ -176,9 +188,16 @@ namespace STM
             Vector3 targetDirection = Quaternion.Euler(0, targetRotation, 0) * Vector3.forward;
 
             // 최종적으로 이동 명령을 수행
-            unityCharacterController.Move(targetDirection.normalized * moveSpeed * Time.deltaTime
-                + new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime);
-
+            if (input.magnitude > 0.1f)  // 입력이 있을 때만 Move 호출
+            {
+                unityCharacterController.Move(targetDirection.normalized * moveSpeed * Time.deltaTime
+                    + new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime);
+            }
+            else
+            {
+                // 속도 0으로 설정
+                unityCharacterController.Move(Vector3.zero);
+            }
             // input 값을 Animator 에 "Horizontal" 파라미터로 전달
             characterAnimator.SetFloat("Horizontal", false == IsPossibleMovement ? 0 : input.x);
 

@@ -36,7 +36,7 @@ namespace STM
             float vertical = Input.GetAxis("Vertical");
 
             moveInput = new Vector2(horizontal, vertical);
-            Debug.Log("Horizontal: " + horizontal + ", Vertical: " + vertical);
+          
 
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
@@ -64,6 +64,7 @@ namespace STM
             {
                 onAttack?.Invoke();
                 onChangeFired?.Invoke(true);
+                Debug.Log("Mouse Left Button Clicked");
             }
 
             if (Input.GetMouseButtonUp(0))
